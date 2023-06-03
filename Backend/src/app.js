@@ -2,6 +2,7 @@ import express from 'express'
 import routes from '../routers/list'
 import mongoose from 'mongoose'
 import cors from 'cors'
+import bodyParser from 'body-parser'
 const app = express();
 
 async function run(){
@@ -16,7 +17,7 @@ async function run(){
     }
 }
 run();
-app.use(express.json());
+app.use(bodyParser.json());
 //routes handling
 //cors
 app.use(cors())

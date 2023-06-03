@@ -7,17 +7,17 @@ import mongoose, { model } from 'mongoose'
 //   },
 
 //geolcation schema
-const GeoLocation=new mongoose.Schema( {
-    type:{
-        type: String,
-        default: "Point"
+// const GeoLocation=new mongoose.Schema( {
+//     type:{
+//         type: String,
+//         default: "Point"
         
-    },
-    coordinates:{
-        type:[Number],
-        index:"2dsphere"
-    }
-})
+//     },
+//     coordinates:{
+//         type:[Number],
+//         index:"2dsphere"
+//     }
+// })
 
 const userSchema= new mongoose.Schema(
     {
@@ -33,7 +33,19 @@ const userSchema= new mongoose.Schema(
             type:Boolean,
             default:false
         },
-        geometry:GeoLocation
+        geometry: {
+            type: {
+              type: String,
+            //   enum: ['Point'],
+            //   required: true,
+              default: "Point"
+            },
+            coordinates: {
+              type: [Number],
+              required: true,
+              index:"2dsphere"
+            }
+          }
     }
 )
 

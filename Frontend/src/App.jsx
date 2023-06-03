@@ -1,73 +1,58 @@
-import { useState,useEffect,useRef } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react';
 import './App.css'
-
+//Text lng=-25.856077 lat=70.848447
 function App() {
-  const [state, setState] = useState('');
-  const latRef=useRef(null);
-  const lngRef=useRef(null);
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const [ninjas, setNinjas] = useState([]);
 
-try{
-  useEffect(()=>{
-    if( !lngRef.current || !latRef.current) return;
-    let lng=lngRef.current.value;
-    let lat=latRef.current.value;
-      
-    // axios.get('/ninjas?lng=' + lng + '&lat=' + lat)
-    //handle success
-   axios.get('http://localhost:5000/api/ninjas?lng=' + lng + '&lat=' + lat)
+  const handleSearch = () => {
+    // Fetch nearby ninjas from the backend API
+    const maxDistance = 10000; // Maximum distance in meters
 
-   .then((res)=>{
-    console.log(res.data);
-
-    setState(res.data.map((ninja, index) => (
-      <li key={index}>
-        <span className={ninja.obj.available}></span>
-        <span className="name">{ninja.obj.name}</span>
-        <span className="rank">{ninja.obj.rank}</span>
-        {/* <span className="dist">{Math.floor(ninja.dis / 1000)} km</span> */}
-      </li>
-    )));
-
-   })
-.catch(err=>err.message);      
-    
-
-}, [])
-
-}
-catch(err){
-  console.log(err.mesaage)
-}
-
+    fetch(`http://localhost:5000/api/ninjas/?lat=${latitude}&lng=${longitude}&maxDistance=${maxDistance}`)
+      .then(response => response.json())
+      .then(data => setNinjas(data))
+      .catch(error => console.error(error));
+  };
 
   return (
-    <>
-    <div>
-      <form >
-        <label htmlFor="lng">Enter Longtitude:</label>
-        <br/>
-        <input type="text" ref={lngRef} required/>
-        <br/>
-        <br/>
-
-        <label htmlFor="lat">Enter Latitude</label>
-        <br/>
-       
-
-        <input type="text" ref={latRef} required/>
-        <br/>
-        <button type="submit" >Find ninjas</button>
-
-      </form>
+    <div className='wrapper'>
+      <h1>Nearby Ninjas</h1>
+     
+      <div>
+        <label>Longitude:</label>
+        <input
+          type="number"
+          value={longitude}
+          onChange={event => setLongitude(event.target.value)}
+        />
+      </div>
+      <div>
+        <label>Latitude:</label>
+        <input
+          type="number"
+          value={latitude}
+          onChange={event => setLatitude(event.target.value)}
+        />
+      </div>
+      <button onClick={handleSearch}>Search</button>
       <ul>
-      {state}
+        {ninjas.map(ninja => (
+          <>
+           <li key={ninja._id}>
+            {ninja.name} 
+            {/* - Distance: {ninja.distance} meters */}
+          </li>
+          <li>{ninja.rank}</li>
 
+          </>
+         
+        ))}
       </ul>
     </div>
-      
-    </>
-  )
+  );
 }
 
 export default App;
+

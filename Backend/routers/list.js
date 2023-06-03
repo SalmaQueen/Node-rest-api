@@ -3,34 +3,27 @@ import Ninja from '../Model/ninjas';
 
 const router = express.Router()
 
+//Test with longitude=-25.856077 and latitude=70.848447
 
-// //route to get list of ninjas
 router.get("/ninjas", (req, res) => {
-  const longitude = parseFloat(req.query.lng);
-  const latitude = parseFloat(req.query.lat);
-  const maxDistance = 100000;
+  const lng = parseFloat(req.query.lng);
+  const lat = parseFloat(req.query.lat);
+  const maxDistance = parseFloat(req.query.maxDistance) || 10000;
 
   Ninja.aggregate([
     {
       $geoNear: {
         near: {
           type: 'Point',
-          coordinates: [longitude, latitude]
+          coordinates: [lng, lat]
         },
         spherical: true,
         distanceField: "dist.calculated",
-        query: {
-          $expr: {
-            $lte: [
-              { $max: "$dist.calculated" },
-              maxDistance
-            ]
-          }
-        }
+        maxDistance: maxDistance
       }
     }
   ])
-    .then(function (results) { 
+    .then(function (results) {
       res.send(results);
     })
     .catch(error => {
@@ -38,23 +31,23 @@ router.get("/ninjas", (req, res) => {
       res.status(500).json({ error: "An error occurred" });
     });
 });
-
 // router.get("/ninjas", (req, res) => {
-//   const longitude = parseFloat(req.query.lng);
-//   const latitude = parseFloat(req.query.lat);
+
+//   const lng = parseFloat(req.query.lng);
+//   const lat = parseFloat(req.query.lat);
+//   const maxDistance = 10000;
 
 //   Ninja.aggregate([
 //     {
 //       $geoNear: {
 //         near: {
 //           type: 'Point',
-//           coordinates: [longitude, latitude]
+//           coordinates: [lng, lat]
 //         },
 //         spherical: true,
 //         distanceField: "dist.calculated",
-//         query: {
-//           $maxDistance: 100000
-//         }
+//         maxDistance: parseFloat(maxDistance)
+        
 //       }
 //     }
 //   ])

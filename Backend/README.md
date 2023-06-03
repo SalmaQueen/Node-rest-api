@@ -4,7 +4,7 @@
 
 -User Model to represent a collection of Users
 
--Ninja Model to represent collection of Ninjas
+-User Model to represent collection of Users
 
 [Schemas]
 
