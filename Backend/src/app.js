@@ -3,11 +3,15 @@ import routes from '../routers/list'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import bodyParser from 'body-parser'
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 const app = express();
 
 async function run(){
     try{
-        await mongoose.connect("mongodb+srv://salma12:Queenheart%4012@cluster0.sflltnj.mongodb.net/?retryWrites=true&w=majority");
+        await mongoose.connect(process.env.MONGODB_URL);
         console.log("successfuly connected");
 
       
